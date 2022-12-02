@@ -7,6 +7,7 @@ class HomeScreen extends StatelessWidget {
 
   // final HomeScreenController _controller = HomeScreenController();
   final HomeScreenController _controller = Get.put(HomeScreenController());
+  // final HomeScreenController _controller2 = Get.find<HomeScreenController>();
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: Obx(() => ListView.builder(
-            itemCount: _controller.myUserList.length,
+            itemCount: _controller.postList.length,
             itemBuilder: (c, i) => ListTile(
               onTap: () {
                 _controller.removeItem(i);
@@ -27,13 +28,15 @@ class HomeScreen extends StatelessWidget {
               onLongPress: () {
                 _controller.updateItem(i);
               },
-              title: Text(_controller.myUserList[i]),
+              title: Text(_controller.postList[i].title.toString()),
             ),
           )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _controller.increment();
+          // _controller.increment();
+          Get.find<HomeScreenController>().increment();
         },
+
         child: const Text('Add'),
       ),
     );

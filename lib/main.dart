@@ -1,3 +1,4 @@
+import 'package:final_project/utils/di.dart';
 import 'package:final_project/views/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,8 +17,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      // home: HomeScreen(),
       debugShowCheckedModeBanner: false,
+      initialBinding: MyDI(),
+
+      getPages: [
+        GetPage(name: '/', page: () => HomeScreen(),),
+      ],
     );
   }
 }
