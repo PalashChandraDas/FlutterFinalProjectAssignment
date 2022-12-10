@@ -1,6 +1,7 @@
 import 'package:final_project/utils/di.dart';
 import 'package:final_project/views/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 void main() {
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       // home: HomeScreen(),
       debugShowCheckedModeBanner: false,
       initialBinding: MyDI(),
+      builder: EasyLoading.init(),
 
       getPages: [
         GetPage(name: '/', page: () => HomeScreen(),),

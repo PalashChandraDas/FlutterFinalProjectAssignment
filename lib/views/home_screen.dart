@@ -31,6 +31,21 @@ class HomeScreen extends StatelessWidget {
               title: Text(_controller.postList[i].title.toString()),
             ),
           )),
+      bottomSheet: Container(
+        height: 60,
+        color: Colors.grey,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+            itemCount: 10,
+            itemBuilder: (c, i) => InkWell(
+                onTap: (){
+                  debugPrint('${i+1}');
+                },
+                child: Chip(label: Text('${i+1}')),
+            ),
+        ),
+      ),
+      /*
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // _controller.increment();
@@ -39,6 +54,8 @@ class HomeScreen extends StatelessWidget {
 
         child: const Text('Add'),
       ),
+
+       */
     );
   }
 }

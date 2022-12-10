@@ -1,8 +1,12 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:final_project/models/my_user_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import '../models/json_holder_data.dart';
+
+import '../utils/apis.dart';
 
 class HomeScreenController extends GetxController {
   var myValue = 0.obs;
@@ -22,7 +26,12 @@ class HomeScreenController extends GetxController {
     debugPrint('OnInit Method Called');
     cgpa.value = 3.5;
 
-    _fetchPostData();
+    // _fetchPostData();
+    // _postDataToJsonHolder();
+    // _putDataToJsonHolder();
+    // _patchDataToJsonHolder();
+    _deletedDataToJsonHolder();
+
     // _fetchPostDataPara();
 
     super.onInit();
@@ -50,36 +59,257 @@ class HomeScreenController extends GetxController {
     myUserList[i] = 'Palash';
   }
 
-
-
+  /*
   Future<void> _fetchPostData() async {
-    var myUrl = 'https://jsonplaceholder.typicode.com';
 
     Dio dio = Dio(BaseOptions(
-      baseUrl: myUrl,
+      baseUrl: Apis.baseUrl,
     ));
 
-     var response = await dio.get('/posts');
+    var connectivityResult = await (Connectivity().checkConnectivity());
 
-     if(response.statusCode == 200){
-       debugPrint('HTTP Method: ${response.requestOptions.method}');
-       debugPrint('HTTP URL: ${response.requestOptions.baseUrl}');
-       debugPrint('HTTP Path: ${response.requestOptions.path}');//endPoint
-       debugPrint('HTTP Status code: ${response.statusCode}');
-       debugPrint('HTTP Status Message: ${response.statusMessage}');
-       debugPrint(response.data.toString());
+     try{
+
+       if (connectivityResult == ConnectivityResult.none) {
+         debugPrint('No Internet!!');
+         // EasyLoading.showError('No Internet Connection');
+       } else {
+         debugPrint('Internet Connected');
+         EasyLoading.show(status: 'loading...');
+       }
+
+       var response = await dio.get(Apis.getJsonHolderPostData);
+       if(response.statusCode == 200){
+         EasyLoading.showSuccess('Great Success!');
+         debugPrint('HTTP Method: ${response.requestOptions.method}');
+         debugPrint('HTTP URL: ${response.requestOptions.baseUrl}');
+         debugPrint('HTTP Path: ${response.requestOptions.path}');//endPoint
+         debugPrint('HTTP Status code: ${response.statusCode}');
+         debugPrint('HTTP Status Message: ${response.statusMessage}');
+         // debugPrint(response.data.toString());
 
 
-       var myPostData = response.data as List;
-       var newList = myPostData.map((e) => JsonHolderData.fromJson(e)).toList();
+         var myPostData = response.data as List;
+         var newList = myPostData.map((e) => JsonHolderData.fromJson(e)).toList();
 
-       postList.addAll(newList);
-       debugPrint('POST LIST LENGTH---> ${postList.length}');
+         postList.addAll(newList);
+         debugPrint('POST LIST LENGTH---> ${postList.length}');
 
-     } else {
-       debugPrint('Failed to load data');
+       } else {
+         debugPrint('Failed to load data');
+         EasyLoading.showToast('No Connection!', duration: const Duration(seconds: 2), toastPosition: EasyLoadingToastPosition.bottom);
+       }
+
+     } catch(e) {
+       debugPrint('Error occurred: $e');
+       EasyLoading.showError('Failed  to load data');
+
+     } finally {
+       EasyLoading.dismiss();
      }
   }
+
+
+
+  Future<void> _postDataToJsonHolder() async {
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: Apis.baseUrl,
+    ));
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+
+     try{
+
+       if (connectivityResult == ConnectivityResult.none) {
+         debugPrint('No Internet!!');
+         // EasyLoading.showError('No Internet Connection');
+       } else {
+         debugPrint('Internet Connected');
+         EasyLoading.show(status: 'loading...');
+       }
+
+       var response = await dio.post(Apis.getJsonHolderPostData, data: {
+         'userId' : '10',
+         'title' : 'my title',
+         'body' : 'my body',
+       });
+       if(response.statusCode == 201){
+         EasyLoading.showSuccess('Great Success!');
+         debugPrint('HTTP Method: ${response.requestOptions.method}');
+         debugPrint('HTTP URL: ${response.requestOptions.baseUrl}');
+         debugPrint('HTTP Path: ${response.requestOptions.path}');//endPoint
+         debugPrint('HTTP Status code: ${response.statusCode}');
+         debugPrint('HTTP Status Message: ${response.statusMessage}');
+         // debugPrint(response.data.toString());
+
+
+         var myPostData = response.data;
+         EasyLoading.showToast('Data loaded successfully at:\n${myPostData['id']}', duration: const Duration(seconds: 2), toastPosition: EasyLoadingToastPosition.bottom);
+
+
+       } else {
+         debugPrint('Failed to load data');
+       }
+
+     } catch(e) {
+       debugPrint('Error occurred: $e');
+       EasyLoading.showError('Failed  to load data');
+
+     } finally {
+       EasyLoading.dismiss();
+     }
+  }
+
+
+  Future<void> _putDataToJsonHolder() async {
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: Apis.baseUrl,
+    ));
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+
+     try{
+       if (connectivityResult == ConnectivityResult.none) {
+         debugPrint('No Internet!!');
+         EasyLoading.showError('No Internet Connection');
+       } else {
+         debugPrint('Internet Connected');
+         EasyLoading.show(status: 'loading...');
+       }
+
+       var response = await dio.put('${Apis.getJsonHolderPostDataByPostId}50', data: {
+         'userId' : '10',
+         'title' : 'my title',
+         'body' : 'my body',
+       });
+       if(response.statusCode == 200){
+         EasyLoading.showSuccess('Great Success!');
+         debugPrint('HTTP Method: ${response.requestOptions.method}');
+         debugPrint('HTTP URL: ${response.requestOptions.baseUrl}');
+         debugPrint('HTTP Path: ${response.requestOptions.path}');//endPoint
+         debugPrint('HTTP Status code: ${response.statusCode}');
+         debugPrint('HTTP Status Message: ${response.statusMessage}');
+         // debugPrint(response.data.toString());
+
+
+         var myPostData = response.data;
+         EasyLoading.showToast('Updated successfully at:\n${myPostData['id']}', duration: const Duration(seconds: 2), toastPosition: EasyLoadingToastPosition.bottom);
+
+
+       } else {
+         debugPrint('Failed to load data');
+       }
+
+     } catch(e) {
+       debugPrint('Error occurred: $e');
+       EasyLoading.showError('Failed to load data');
+
+     } finally {
+       EasyLoading.dismiss();
+     }
+  }
+
+
+  void _patchDataToJsonHolder() async {
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: Apis.baseUrl,
+    ));
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+
+     try{
+       if (connectivityResult == ConnectivityResult.none) {
+         debugPrint('No Internet!!');
+         EasyLoading.showError('No Internet Connection');
+       } else {
+         debugPrint('Internet Connected');
+         EasyLoading.show(status: 'loading...');
+       }
+
+       var response = await dio.patch('${Apis.getJsonHolderPostDataByPostId}25', data: {
+         'userId' : '10',
+         'title' : 'my title',
+         'body' : 'my body',
+       });
+       if(response.statusCode == 200){
+         EasyLoading.showSuccess('Great Success!');
+         debugPrint('HTTP Method: ${response.requestOptions.method}');
+         debugPrint('HTTP URL: ${response.requestOptions.baseUrl}');
+         debugPrint('HTTP Path: ${response.requestOptions.path}');//endPoint
+         debugPrint('HTTP Status code: ${response.statusCode}');
+         debugPrint('HTTP Status Message: ${response.statusMessage}');
+         // debugPrint(response.data.toString());
+
+
+         var myPostData = response.data;
+         EasyLoading.showToast('Updated successfully at:\n${myPostData['id']}', duration: const Duration(seconds: 2), toastPosition: EasyLoadingToastPosition.bottom);
+
+
+       } else {
+         debugPrint('Failed to load data');
+       }
+
+     } catch(e) {
+       debugPrint('Error occurred: $e');
+       EasyLoading.showError('Failed to load data');
+
+     } finally {
+       EasyLoading.dismiss();
+     }
+  }
+
+   */
+
+
+  Future<void> _deletedDataToJsonHolder() async {
+
+    Dio dio = Dio(BaseOptions(
+      baseUrl: Apis.baseUrl,
+    ));
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+
+     try{
+       if (connectivityResult == ConnectivityResult.none) {
+         debugPrint('No Internet!!');
+         EasyLoading.showError('No Internet Connection');
+       } else {
+         debugPrint('Internet Connected');
+         EasyLoading.show(status: 'loading...');
+       }
+
+       var response = await dio.delete('${Apis.getJsonHolderPostDataByPostId}19',);
+       if(response.statusCode == 200){
+         EasyLoading.showSuccess('Great Success!');
+         debugPrint('HTTP Method: ${response.requestOptions.method}');
+         debugPrint('HTTP URL: ${response.requestOptions.baseUrl}');
+         debugPrint('HTTP Path: ${response.requestOptions.path}');//endPoint
+         debugPrint('HTTP Status code: ${response.statusCode}');
+         debugPrint('HTTP Status Message: ${response.statusMessage}');
+         // debugPrint(response.data.toString());
+
+
+         var myPostData = response.data;
+         EasyLoading.showToast('Record deleted successfully', duration: const Duration(seconds: 2), toastPosition: EasyLoadingToastPosition.bottom);
+
+
+       } else {
+         debugPrint('Failed to load data');
+       }
+
+     } catch(e) {
+       debugPrint('Error occurred: $e');
+       EasyLoading.showError('Failed to load data');
+
+     } finally {
+       EasyLoading.dismiss();
+     }
+  }
+
+
 
 
   /*
